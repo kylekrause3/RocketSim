@@ -29,9 +29,9 @@ def initialize_simulation(generate_new_scenario):
 def initialize_terrain(generate_new_scenario):
     global GROUND_HEIGHT, GROUND_WIDTH, WATER_HEIGHT
 
-    GROUND_HEIGHT = random.randint(250, 350)
-    GROUND_WIDTH = random.randint(75, 100)
-    WATER_HEIGHT = GROUND_HEIGHT - 50
+    GROUND_HEIGHT = math.floor(WINDOW_HEIGHT * 0.3)
+    GROUND_WIDTH = math.floor(WINDOW_WIDTH * 0.2)
+    WATER_HEIGHT = random.randint(50, GROUND_HEIGHT)
     print("Initialize Terrain Successfully Called")
 
 
@@ -56,8 +56,10 @@ def draw_objects():
   
 
 def draw_terrain():
+    # water first, then ground OVER water
+    pythonGraph.draw_rectangle(0, WINDOW_HEIGHT - WATER_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, pythonGraph.colors.BLUE, pythonGraph.colors.BLUE)
     pythonGraph.draw_rectangle(0, WINDOW_HEIGHT - GROUND_HEIGHT, GROUND_WIDTH, WINDOW_HEIGHT, pythonGraph.colors.GREEN, pythonGraph.colors.GREEN)
-    pass
+    
    
 
 def draw_boat():
