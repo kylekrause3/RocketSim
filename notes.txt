@@ -1,0 +1,2 @@
+ctrl + shift + ` to make a new terminal in venv
+ctrl + shift + 5 to split terminal into current and venv

@@ -1,4 +1,5 @@
-from turtle import window_height
+from turtle import window_height 
+from PIL import Image
 import pythonGraph, random, math
 
 # CONSTANTS
@@ -16,6 +17,13 @@ WATER_HEIGHT = 0
 ground_y_coords = [0]
 
 # Rocket
+rocketx = 0
+rockety = 0
+rocketvelx = 0
+rocketvely = 0
+
+# rocketimg = image.open('/boat.png')
+
 
 # Boat (i.e., Landing Pad)
 
@@ -40,7 +48,14 @@ def initialize_boat(generate_new_scenario):
 
 
 def initialize_rocket(generate_new_scenario):
-    print("Initialize Rocket Successfully Called")
+    global rocketx, rockety, rocketvelx, rocketvely
+
+    rocketx = GROUND_WIDTH / 2
+    rockety = GROUND_HEIGHT
+    rocketvelx = 0.0
+    rocketvely = 0.0
+
+
 
 
 def erase_objects():
