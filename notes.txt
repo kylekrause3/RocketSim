@@ -1,2 +1,5 @@
 ctrl + shift + ` to make a new terminal in venv
 ctrl + shift + 5 to split terminal into current and venv
+
+
+I have had the same problem, in my case it was caused by the current directory of the vscode debug process being different to the directory the script was in. 
