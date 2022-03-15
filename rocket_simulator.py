@@ -1,6 +1,6 @@
 from turtle import window_height 
 from PIL import Image
-import pythonGraph, random, math
+import pythonGraph, random, math, rocket_ai_template, ga_helper
 
 # CONSTANTS
 WINDOW_WIDTH  = 1800
@@ -15,11 +15,15 @@ crashes = 0
 landings = 0
 
 # Simulation Variables
+turns_before_new = 5
+currentrun = 0
+
 
 # Terrain
 ground_height = 0
 ground_width = 0
 water_height = 0
+water_height_init = 0
 ground_y_coords = [0]
 
 # Rocket
@@ -56,10 +60,12 @@ def initialize_simulation(generate_new_scenario):
      
 
 def initialize_terrain(generate_new_scenario):
-    global ground_height, ground_width, water_height, ground_y_coords
+    global ground_height, ground_width, water_height, ground_y_coords, water_height_init
     ground_height = math.floor(WINDOW_HEIGHT * 0.3)
     ground_width = math.floor(WINDOW_WIDTH * 0.2)
-    water_height = random.randint(50, ground_height)
+    if generate_new_scenario:
+        water_height_init = random.randint(50, ground_height)
+    water_height = water_height_init
 
     ground_y_coords = [ground_height, water_height]
 
@@ -82,13 +88,13 @@ def initialize_boat(generate_new_scenario):
 
     boatheight = 48
     boatwidth = boatheight * 3
-    '''if(generate_new_scenario == True):
+    if(generate_new_scenario == True):
         boatx_init = random.randint(ground_width, WINDOW_WIDTH - boatwidth)
-        boatvel_init = random.randint(-3, 3)'''
+        boatvel_init = random.randint(-3, 3)
 
-    boatx = random.randint(ground_width, WINDOW_WIDTH - boatwidth)
+    boatx = boatx_init
     boaty = WINDOW_HEIGHT - water_height - boatheight
-    boatvel = random.randint(-3, 3)
+    boatvel = boatvel_init
 
 
 def erase_objects():
@@ -143,6 +149,7 @@ def update_rocket():
         if not rockety < WINDOW_HEIGHT * .33:
             rocket_thrusters[1] = rocket_gravity + 0.3
         else:
+            rocket_thrusters[1] = rocket_gravity / 2
             rocket_thrusters[2] = .25
         if rocketx >= ground_width:
             fuel_consumed = 0
@@ -171,6 +178,15 @@ def update_boat():
 
 def get_input():
     global boatvel, rocket_thrusters
+    # run_autopilot(run_number, rocket_x, rocket_y, rocket_vx, rocket_vy, rocket_width, boat_x, boat_y, boat_width, gravity)
+    for i in range(3):
+        rocket_thrusters[i] = 0.0
+    if not rocket_isboosting:
+        ai_decision = rocket_ai_template.run_autopilot(currentrun, rocketx, rockety, rocketvelx, rocketvely, rocketwidth, boatx, boaty, boatwidth, rocket_gravity)
+        for i in range(len(rocket_thrusters)):
+            rocket_thrusters[i] = ai_decision[i]
+
+    '''
     for i in range(3):
         rocket_thrusters[i] = 0.0
 
@@ -180,7 +196,7 @@ def get_input():
         if pythonGraph.key_down('up'):
             rocket_thrusters[1] = rocket_gravity + (rocket_gravity * 1.5)
         if pythonGraph.key_down('right'):
-            rocket_thrusters[2] = 0.5
+            rocket_thrusters[2] = 0.5'''
 
 
 def draw_hud():
@@ -227,6 +243,7 @@ def analyze_results():
 
 
 def main():
+    global currentrun
     pythonGraph.open_window(WINDOW_WIDTH, WINDOW_HEIGHT)
     pythonGraph.set_window_title("Rocket Sim")
 
@@ -240,7 +257,12 @@ def main():
             update_objects()
         else:
             analyze_results()
-            initialize_simulation(False)
+            currentrun += 1
+            if currentrun >= turns_before_new:
+                currentrun = 0
+                initialize_simulation(True)
+            else:
+                initialize_simulation(False)
         
         pythonGraph.update_window()
 
