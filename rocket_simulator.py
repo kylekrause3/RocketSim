@@ -175,28 +175,29 @@ def update_boat():
     if boatx <= ground_width or boatx + boatwidth >= WINDOW_WIDTH:
         boatvel *= -1
 
+AI = True
 
 def get_input():
     global boatvel, rocket_thrusters
-    # run_autopilot(run_number, rocket_x, rocket_y, rocket_vx, rocket_vy, rocket_width, boat_x, boat_y, boat_width, gravity)
-    for i in range(3):
-        rocket_thrusters[i] = 0.0
-    if not rocket_isboosting:
-        ai_decision = rocket_ai_template.run_autopilot(currentrun, rocketx, rockety, rocketvelx, rocketvely, rocketwidth, boatx, boaty, boatwidth, rocket_gravity)
-        for i in range(len(rocket_thrusters)):
-            rocket_thrusters[i] = ai_decision[i]
+    if AI: # AI Ver.
+        # run_autopilot(run_number, rocket_x, rocket_y, rocket_vx, rocket_vy, rocket_width, boat_x, boat_y, boat_width, gravity)
+        for i in range(3):
+            rocket_thrusters[i] = 0.0
+        if not rocket_isboosting:
+            ai_decision = rocket_ai_template.run_autopilot(currentrun, rocketx, rockety, rocketvelx, rocketvely, rocketwidth, boatx, boaty, boatwidth, rocket_gravity)
+            for i in range(len(rocket_thrusters)):
+                rocket_thrusters[i] = ai_decision[i]
+    else: #takes human input
+        for i in range(3):
+            rocket_thrusters[i] = 0.0
 
-    '''
-    for i in range(3):
-        rocket_thrusters[i] = 0.0
-
-    if not rocket_isboosting:
-        if pythonGraph.key_down('left'):
-            rocket_thrusters[0] = 0.5
-        if pythonGraph.key_down('up'):
-            rocket_thrusters[1] = rocket_gravity + (rocket_gravity * 1.5)
-        if pythonGraph.key_down('right'):
-            rocket_thrusters[2] = 0.5'''
+        if not rocket_isboosting:
+            if pythonGraph.key_down('left'):
+                rocket_thrusters[0] = 0.5
+            if pythonGraph.key_down('up'):
+                rocket_thrusters[1] = rocket_gravity + (rocket_gravity * 1.5)
+            if pythonGraph.key_down('right'):
+                rocket_thrusters[2] = 0.5
 
 
 def draw_hud():
